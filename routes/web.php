@@ -17,42 +17,76 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
+// Login Routes
 $router->post('/register', 'UserController@register');
-
 $router->post('/login', 'UserController@login');
 
-$router->group(['prefix' => 'admin'], function () use ($router) {
-
-
-
-});
-
-$router->get('/posts/index' , [
-    'as' => 'post.index',
-    'uses' => 'PostController@index'
-]);
-
-$router->get('/posts/self' , [
-    'as' => 'post.self',
-    'uses' => 'PostController@self'
-]);
-
-$router->post('/posts/create' , [
-    'as' => 'post.create',
-    'uses' => 'PostController@create'
-]);
-
+// Token Refresh
 $router->get('/refresh', [
     'as' => 'login.refresh',
     'uses' => 'UserController@refresh'
 ]);
 
-$router->put('/posts/update/{id}', [
-    'as' => 'posts.update',
-    'uses' => 'PostController@update'
-]);
+// Post Routes
+$router->group(['prefix' => 'posts'], function () use ($router) {
+    $router->get('index' , [
+        'as' => 'post.index',
+        'uses' => 'PostController@index'
+    ]);
+    
+    $router->get('show/{id}' , [
+        'as' => 'post.show',
+        'uses' => 'PostController@show'
+    ]);
+    
+    $router->post('create' , [
+        'as' => 'post.create',
+        'uses' => 'PostController@create'
+    ]);
 
-$router->delete('/posts/delete/{id}', [
-    'as' => 'posts.delete',
-    'uses' => 'PostController@delete'
-]);
+    
+    $router->put('update/{id}', [
+        'as' => 'posts.update',
+        'uses' => 'PostController@update'
+    ]);
+    
+    $router->delete('delete/{id}', [
+        'as' => 'posts.delete',
+        'uses' => 'PostController@delete'
+    ]);
+
+    $router->get('self' , [
+        'as' => 'post.self',
+        'uses' => 'PostController@self'
+    ]);
+});
+
+// $router->get('/admin', [
+//     'as' => 'admin',
+//     'uses' => 'DetailController@admin'
+// ]);
+
+$router->group(['prefix' => 'details'], function () use ($router) {
+    
+    $router->get('show/{id}' , [
+        'as' => 'details.show',
+        'uses' => 'DetailController@show'
+    ]);
+
+    $router->post('create', [
+        'as' => 'details.create',
+        'uses' => 'DetailController@create'
+    ]);
+    
+    $router->put('update/{id}', [
+        'as' => 'details.update',
+        'uses' => 'DetailController@update'
+    ]);
+    
+    $router->delete('delete/{id}', [
+        'as' => 'details.delete',
+        'uses' => 'DetailController@delete'
+    ]);
+
+    
+});

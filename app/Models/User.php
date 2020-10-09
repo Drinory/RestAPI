@@ -22,7 +22,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password'
+        'name', 'email', 'password', 'isAdmin'
     ];
 
     /**
@@ -38,6 +38,13 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->hasMany('App\Models\Post');
     }
 
+    public function details(){
+        return $this->hasOne('App\Models\Detail');
+    }
+
+    // public function isAdministrator() {
+    //     return $this->roles()->where('role', 'Administrator')->exists();
+    // }
 
     public function getJWTIdentifier()
     {

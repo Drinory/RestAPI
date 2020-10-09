@@ -11,7 +11,58 @@ use Illuminate\Support\Facades\Auth;
 class PostController extends Controller
 {
     public function index(){
-        return Post::all();
+        $post = Post::all();
+        return $post;
+    }
+    
+    public function show($id){
+        return Post::findOrFail($id);
+    }
+
+    public function create(Request $request){
+        $this->validate($request, [
+            'title' => 'required'
+        ]);
+        $data = $request->only('title');
+        
+        $user = $this->authUser();
+
+        if($user->isAdmin || $user->id == $findPost->user_id)
+        {
+            $post = $user->posts()->create($data);
+            return $post;
+        } else {
+            return response()->json("You're not authorized", 401);
+        }
+
+    }
+
+    public function update(Request $request, $id){
+        $this->validate($request, [
+            'title' => 'required'
+        ]);
+        $data = $request->only('title');
+        $findPost = Post::findOrFail($id);
+
+        $user = $this->authUser();
+        
+        $findPost->update($data); 
+
+        return $findPost;
+
+    }
+    public function delete($id){
+        $findPost = Post::findOrFail($id);
+        
+        $user = $this->authUser();
+
+        if($user->isAdmin || $user->id == $findPost->user_id)
+        {
+            $findPost->delete();
+            return response('Deleted Successfully', 200);
+        } else {
+            return response()->json("You're not authorized", 401);
+        }
     }
 
     public function self(){
@@ -26,40 +77,5 @@ class PostController extends Controller
         return $user->posts;
     }
 
-    public function show($id){
-        return Post::findOrFail();
-    }
-
-    public function create(Request $request){
-        $data = $request->only('title');
-        
-        $user = $this->authUser();
-
-        $post = $user->posts()->create($data);
-        return $post;
-
-    }
-
-    public function update(Request $request, $id){
-        
-        $data = $request->only('title');
-        $findPost = Post::findOrFail($id);
-
-        $user = $this->authUser();
-        
-        $findPost->update($data); 
-
-        return $findPost;
-
-    }
-    public function delete($id){
-        $findPost = Post::findOrFail($id);
-        
-        $this->authUser();
-
-        $findPost->delete();
-        
-        return response('Deleted Successfully', 200);
-    }
 
 }
